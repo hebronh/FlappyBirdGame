@@ -1,1 +1,4 @@
-# FlappyBirdGame
+# FlappyBirdGame 
+
+The Flappy Bird Game is typically a game that instructs the user to tap on their screen at a rhythm that allows them to make it through hurdles that are pipe shaped. The game typically involves a bird to be the object that the user taps and aims to get through the pipes. In the java game I am developing, I am aiming to do the same thing but the user will use their mouse to hold their “bird” which in this case will be a ball.  
+The score will be displayed on the screen as the user is playing. Every hurdle/pipe that the “bird” passes will be 10 points. There is not necessarily a win or loss, but the player ideally wants to gain as many points as possible. This is a single player game. When the player does not make it through the empty space in the hurdle/pipe, the “bird” hits the pipe and the game restarts with a score of 0. The game ends whenever the player wants since the score just resets after each time the player does not make it through the hurdle.   
