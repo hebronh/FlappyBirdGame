@@ -1,6 +1,6 @@
-import java.awt.Graphics; 
+import java.awt.Graphics;
 import java.awt.Color;
-
+import java.awt.Rectangle;
 
 public class Pipe {
     private int x, width, height;
@@ -14,7 +14,7 @@ public class Pipe {
     }
 
     public void draw(Graphics g) {
-        g.setColor(Color.GREEN);
+        g.setColor(Color.BLACK);
         g.fillRect(x, (int) y, width, height);
     }
 
@@ -24,6 +24,18 @@ public class Pipe {
 
     public int getPositionX() {
         return this.x;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public double getY() {
+        return y;
     }
 
     public boolean isOffCanvas() {

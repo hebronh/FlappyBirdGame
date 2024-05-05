@@ -2,14 +2,15 @@ import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.Rectangle;
 
-public class Ball {
+public class Circle {
     private int x;
     private int y;
     private int size;
     private int velocityX;
     private int velocityY;
 
-    public Ball(int x, int y, int size) {
+    // Constructor
+    public Circle(int x, int y, int size) {
         this.x = x;
         this.y = y;
         this.size = size;
@@ -17,6 +18,7 @@ public class Ball {
         this.velocityY = 0;
     }
 
+    // Getter and setter for velocityX
     public int getVelocityX() {
         return velocityX;
     }
@@ -25,6 +27,7 @@ public class Ball {
         this.velocityX = velocityX;
     }
 
+    // Getter and setter for velocityY
     public int getVelocityY() {
         return velocityY;
     }
@@ -51,8 +54,15 @@ public class Ball {
     }
 
     public void bounce(int mouseX, int mouseY) {
-        velocityX = 8;
-        velocityY = -10;
+        int distanceX = mouseX - (x + size / 2);
+        int distanceY = mouseY - (y + size / 2);
+        double distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+        int separation = -50; // Adjust this value to control the separation
+        
+        x = mouseX - (int)(distanceX * (size / 2 - separation) / distance) - size / 2;
+        y = mouseY - (int)(distanceY * (size / 2 - separation) / distance) - size / 2;
+        velocityX = 0;
+        velocityY = 0;
     }
     
     
@@ -69,15 +79,17 @@ public class Ball {
     }
 
     public boolean intersects(Pipe pipe) {
-        Rectangle ballRect = new Rectangle(x, y, size, size);
+        Rectangle circleRect = new Rectangle(x, y, size, size);
         Rectangle pipeRect = new Rectangle(pipe.getPositionX(), (int) pipe.getY(), pipe.getWidth(), pipe.getHeight());
-        return ballRect.intersects(pipeRect);
+        return circleRect.intersects(pipeRect);
     }
     
+    // New method to get the position along the y-axis
     public int getPositionY() {
         return y;
     }
     
+    // New method to get the diameter of the circle
     public int getDiameter() {
         return size;
     }
