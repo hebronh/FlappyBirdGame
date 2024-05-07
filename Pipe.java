@@ -1,16 +1,22 @@
-import java.awt.Graphics;
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Rectangle;
 
 public class Pipe {
-    private int x, width, height;
-    private double y;
+    private int x; 
+    private double y; 
+    private int width; 
+    private int height; 
 
     public Pipe(int x, double y, int width, double height) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = (int) height;
+    }
+
+    public Rectangle getBounds() {
+        return new Rectangle(x, (int) y, width, height);
     }
 
     public void draw(Graphics g) {

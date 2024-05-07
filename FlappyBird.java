@@ -2,39 +2,37 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 public class FlappyBird extends JPanel {
-   // private List<Cloud> clouds; 
     private Ball ball;
-    private Pipe topPipe;
-    private Pipe botPipe;
+    private Pipe topPipe, botPipe;
     private int score;
     private final int GAP_SIZE = 140;
     private boolean gameOver = false;
+    private Clouds clouds; 
 
     public FlappyBird() {
-        initGame();
         setPreferredSize(new Dimension(700, 700));
+        initGame();
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (!gameOver) {
-                    ball.setVelocityY(-17); 
+                if (gameOver) {
+                    gameOver = false;
+                    score = 0;
+                    initGame();
+                } else {
+                    ball.setVelocityY(-10);
                 }
             }
         });
     }
 
     private void initGame() {
-     //   clouds = new ArrayList<>();
-        // Add static clouds (x, y, width, height)
-   //     clouds.add(new Cloud(100, 100, 100, 50));
-     //   clouds.add(new Cloud(400, 200, 120, 60));
         ball = new Ball(getWidth() / 2, getHeight() / 2, 20);
         makePipes();
         score = 0;
+        clouds = new Clouds(getWidth()); 
     }
 
     @Override
@@ -44,80 +42,75 @@ public class FlappyBird extends JPanel {
     }
 
     private void drawGame(Graphics g) {
+        // sky background
         g.setColor(new Color(120, 160, 190));
         g.fillRect(0, 0, getWidth(), getHeight());
 
-   //    for (Cloud cloud : clouds) {
-     //       cloud.draw(g);
-      //  }
+        // clouds 
+        clouds.draw(g);
 
         topPipe.draw(g);
         botPipe.draw(g);
 
-        // score
         g.setColor(Color.BLACK);
         g.setFont(new Font("Arial", Font.BOLD, 32));
         g.drawString(String.valueOf(score), getWidth() - 100, 100);
-
-        //  ball
         ball.draw(g);
 
-        // game over
+        // game over text
         if (gameOver) {
             g.setColor(Color.RED);
             g.setFont(new Font("Arial", Font.BOLD, 48));
             g.drawString("Game Over", getWidth() / 2 - 150, getHeight() / 2);
         }
 
+        // update game 
         if (!gameOver) {
             updateGame();
         }
+    } 
+    private boolean checkCollision() {
+    Rectangle ballBounds = ball.getBounds();
+
+    Rectangle topPipeBounds = topPipe.getBounds();
+    Rectangle botPipeBounds = botPipe.getBounds();
+
+    if (ballBounds.intersects(topPipeBounds) || ballBounds.intersects(botPipeBounds)) {
+        return true;
     }
+
+    return false;
+}
 
 
     private void updateGame() {
         ball.update();
-        topPipe.setPositionX(topPipe.getPositionX() - 4);
+        topPipe.setPositionX(topPipe.getPositionX() - 3);
         botPipe.setPositionX(topPipe.getPositionX());
-        
+
+        clouds.update();
+
         if (topPipe.isOffCanvas()) {
             makePipes();
             score += 10;
         }
-        
-        boolean passedThroughGap = ball.getX() > topPipe.getPositionX() &&
-                                    ball.getX() < topPipe.getPositionX() + topPipe.getWidth();
-        boolean passedThroughTopPipe = ball.getY() + ball.getSize() / 2 > topPipe.getHeight();
-        boolean passedThroughBottomPipe = ball.getY() + ball.getSize() / 2 < topPipe.getHeight() + GAP_SIZE;
-        
-        if (passedThroughGap) {
-            if (!passedThroughTopPipe || !passedThroughBottomPipe) {
-                gameOver = true;
-            }
-        } else {
-            gameOver = false;
+
+        // check collision with pipes
+        if (checkCollision()) {
+            gameOver = true;
         }
-    }    
-    
-    
+    }
 
     private void makePipes() {
-        int pipeWidth = 80;
         int screenHeight = getHeight();
-        int gapStart = (int) (Math.random() * (screenHeight - GAP_SIZE)); 
-    
-        if (gapStart < 0) {
-            gapStart = 0;
-        } else if (gapStart + GAP_SIZE > screenHeight) {
-            gapStart = screenHeight - GAP_SIZE;
-        }
-    
-        int gapEnd = gapStart + GAP_SIZE;
-    
-        topPipe = new Pipe(getWidth(), 0, pipeWidth, gapStart);
-        botPipe = new Pipe(getWidth(), gapEnd, pipeWidth, screenHeight - gapEnd);
+        int gap = (int) (Math.random() * (screenHeight - GAP_SIZE)) + GAP_SIZE / 2;
+        int gapStart = gap - GAP_SIZE / 2;
+        int gapEnd = gap + GAP_SIZE / 2;
+
+        topPipe = new Pipe(getWidth(), 0, 80, gapStart);
+        botPipe = new Pipe(getWidth(), gapEnd, 80, screenHeight - gapEnd);
     }
-    
+
     public static void main(String[] args) {
         JFrame frame = new JFrame("Flappy Bird");
         FlappyBird flappyBird = new FlappyBird();
@@ -125,7 +118,6 @@ public class FlappyBird extends JPanel {
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
-        // Game loop
         while (true) {
             flappyBird.repaint();
             try {

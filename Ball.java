@@ -5,32 +5,33 @@ import java.awt.Rectangle;
 public class Ball {
     private int x;
     private int y;
-    private int size;
-    private int velocityX;
-    private int velocityY;
+    private int size; 
+    private int velocityY = 0; 
 
     public Ball(int x, int y, int size) {
         this.x = x;
         this.y = y;
         this.size = size;
-        this.velocityX = 0;
-        this.velocityY = 0;
     }
 
-    public int getVelocityX() {
-        return velocityX;
-    }
-
-    public void setVelocityX(int velocityX) {
-        this.velocityX = velocityX;
-    }
-
-    public int getVelocityY() {
-        return velocityY;
+    public Rectangle getBounds() {
+        int radius = size / 2;
+        int boundingBoxX = x - radius;
+        int boundingBoxY = y - radius;
+        return new Rectangle(boundingBoxX, boundingBoxY, size, size);
     }
 
     public void setVelocityY(int velocityY) {
         this.velocityY = velocityY;
+    }
+
+    // Added method to get the velocityY
+    public int getVelocityY() {
+        return velocityY;
+    }
+
+    public void setY(int y) { // Added missing setY method
+        this.y = y;
     }
 
     public int getX() {
@@ -50,35 +51,47 @@ public class Ball {
         g.fillOval(x, y, size, size);
     }
 
-    public void bounce(int mouseX, int mouseY) {
-        velocityX = 8;
-        velocityY = -10;
-    }
-    
-    
-    
     public void update() {
-        x += velocityX;
+        velocityY += 1;
         y += velocityY;
-        if (x < 0 || x + size > 700) {
-            velocityX = -velocityX;
-        }
-        if (y < 0 || y + size > 700) {
-            velocityY = -velocityY;
+
+        if (y < 0) {
+            y = 0; 
+            velocityY = 0; 
+        } else if (y + size > 700) {
+            y = 700 - size; 
+            velocityY = 0; 
         }
     }
 
-    public boolean intersects(Pipe pipe) {
-        Rectangle ballRect = new Rectangle(x, y, size, size);
-        Rectangle pipeRect = new Rectangle(pipe.getPositionX(), (int) pipe.getY(), pipe.getWidth(), pipe.getHeight());
-        return ballRect.intersects(pipeRect);
+public boolean madeItThroughPipe(Pipe topPipe, Pipe botPipe) {
+    Rectangle ballBounds = getBounds();
+
+    Rectangle topPipeBounds = topPipe.getBounds();
+    Rectangle botPipeBounds = botPipe.getBounds();
+
+    int buffer = 1; 
+
+    Rectangle ballBufferBounds = new Rectangle(
+        ballBounds.x - buffer,
+        ballBounds.y - buffer,
+        ballBounds.width + 2 * buffer,
+        ballBounds.height + 2 * buffer
+    );
+
+    if (ballBufferBounds.intersects(topPipeBounds)) {
+        if (ballBounds.intersects(topPipeBounds)) {
+            return false; 
+        }
     }
-    
-    public int getPositionY() {
-        return y;
+
+    if (ballBufferBounds.intersects(botPipeBounds)) {
+        if (ballBounds.intersects(botPipeBounds)) {
+            return false;
+        }
     }
-    
-    public int getDiameter() {
-        return size;
-    }
+
+    return true;
+}
+
 }
