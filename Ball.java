@@ -24,13 +24,12 @@ public class Ball {
     public void setVelocityY(int velocityY) {
         this.velocityY = velocityY;
     }
-
-    // Added method to get the velocityY
+    
     public int getVelocityY() {
         return velocityY;
     }
 
-    public void setY(int y) { // Added missing setY method
+    public void setY(int y) { 
         this.y = y;
     }
 
@@ -92,6 +91,5 @@ public boolean madeItThroughPipe(Pipe topPipe, Pipe botPipe) {
     }
 
     return true;
-}
-
+} 
 }

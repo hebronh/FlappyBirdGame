@@ -37,4 +37,10 @@ public class Clouds {
     }
 
     public void update() {
-        for (Rectang
+        for (Rectangle cloud : clouds) {
+            cloud.x -= 1;
+            if (cloud.x + cloud.width < 0) {
+                cloud.x = panelWidth;            }
+        }
+    }
+}

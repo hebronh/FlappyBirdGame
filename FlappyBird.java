@@ -22,11 +22,13 @@ public class FlappyBird extends JPanel {
                     score = 0;
                     initGame();
                 } else {
+                    // Set a consistent upward velocity when the mouse is pressed
                     ball.setVelocityY(-10);
                 }
             }
-        });
+        }); 
     }
+        
 
     private void initGame() {
         ball = new Ball(getWidth() / 2, getHeight() / 2, 20);
@@ -68,38 +70,49 @@ public class FlappyBird extends JPanel {
         if (!gameOver) {
             updateGame();
         }
-    } 
+    }  
+    
     private boolean checkCollision() {
-    Rectangle ballBounds = ball.getBounds();
-
-    Rectangle topPipeBounds = topPipe.getBounds();
-    Rectangle botPipeBounds = botPipe.getBounds();
-
-    if (ballBounds.intersects(topPipeBounds) || ballBounds.intersects(botPipeBounds)) {
-        return true;
+        Rectangle ballBounds = ball.getBounds();
+        Rectangle topPipeBounds = topPipe.getBounds();
+        Rectangle botPipeBounds = botPipe.getBounds();
+    
+        // Check if the ball collides with the top pipe
+        if (ballBounds.intersects(topPipeBounds)) {
+            // Bounce the ball back and adjust its position and velocity
+            ball.setVelocityY(-ball.getVelocityY() / 2);
+            ball.setY(topPipeBounds.y + topPipeBounds.height);
+            return true; // Collision detected, but game continues
+        }
+    
+        // Check if the ball collides with the bottom pipe
+        if (ballBounds.intersects(botPipeBounds)) {
+            // Bounce the ball back and adjust its position and velocity
+            ball.setVelocityY(-ball.getVelocityY() / 2);
+            ball.setY(botPipeBounds.y - ball.getSize());
+            return true; // Collision detected, but game continues
+        }
+    
+        // If no collision occurs
+        return false;
     }
-
-    return false;
-}
-
-
+    
     private void updateGame() {
         ball.update();
         topPipe.setPositionX(topPipe.getPositionX() - 3);
         botPipe.setPositionX(topPipe.getPositionX());
-
+    
         clouds.update();
-
+    
         if (topPipe.isOffCanvas()) {
             makePipes();
             score += 10;
         }
-
-        // check collision with pipes
-        if (checkCollision()) {
-            gameOver = true;
-        }
+    
+        // Check collision with pipes and handle the bounce effect
+        checkCollision();
     }
+    
 
     private void makePipes() {
         int screenHeight = getHeight();
