@@ -76,29 +76,25 @@ public class FlappyBird extends JPanel {
         Rectangle topPipeBounds = topPipe.getBounds();
         Rectangle botPipeBounds = botPipe.getBounds();
     
-        if (ballBounds.intersects(topPipeBounds)) {
-            ball.setVelocityY(-ball.getVelocityY() / 2);
-            ball.setY(topPipeBounds.y + topPipeBounds.height);
-            return true; 
-        }
+        boolean isBallInGap = ball.getY() > topPipeBounds.height && ball.getY() + ball.getSize() < botPipeBounds.y;
     
-        if (ballBounds.intersects(botPipeBounds)) {
-            // bounce ball back and adjust position
-            ball.setVelocityY(-ball.getVelocityY() / 2);
-            ball.setY(botPipeBounds.y - ball.getSize());
-            return true; 
+        if ((ballBounds.intersects(topPipeBounds) || ballBounds.intersects(botPipeBounds)) && !isBallInGap) {
+            gameOver = true;
+            return true;
         }
     
         return false;
     }
     
+    
     private void updateGame() {
         ball.update();
+        
         topPipe.setPositionX(topPipe.getPositionX() - 3);
         botPipe.setPositionX(topPipe.getPositionX());
-    
+        
         clouds.update();
-    
+        
         if (topPipe.isOffCanvas()) {
             makePipes();
             score += 10;
@@ -106,6 +102,7 @@ public class FlappyBird extends JPanel {
     
         checkCollision();
     }
+    
     
 
     private void makePipes() {
