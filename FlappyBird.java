@@ -22,7 +22,6 @@ public class FlappyBird extends JPanel {
                     score = 0;
                     initGame();
                 } else {
-                    // Set a consistent upward velocity when the mouse is pressed
                     ball.setVelocityY(-10);
                 }
             }
@@ -77,23 +76,19 @@ public class FlappyBird extends JPanel {
         Rectangle topPipeBounds = topPipe.getBounds();
         Rectangle botPipeBounds = botPipe.getBounds();
     
-        // Check if the ball collides with the top pipe
         if (ballBounds.intersects(topPipeBounds)) {
-            // Bounce the ball back and adjust its position and velocity
             ball.setVelocityY(-ball.getVelocityY() / 2);
             ball.setY(topPipeBounds.y + topPipeBounds.height);
-            return true; // Collision detected, but game continues
+            return true; 
         }
     
-        // Check if the ball collides with the bottom pipe
         if (ballBounds.intersects(botPipeBounds)) {
-            // Bounce the ball back and adjust its position and velocity
+            // bounce ball back and adjust position
             ball.setVelocityY(-ball.getVelocityY() / 2);
             ball.setY(botPipeBounds.y - ball.getSize());
-            return true; // Collision detected, but game continues
+            return true; 
         }
     
-        // If no collision occurs
         return false;
     }
     
@@ -109,7 +104,6 @@ public class FlappyBird extends JPanel {
             score += 10;
         }
     
-        // Check collision with pipes and handle the bounce effect
         checkCollision();
     }
     
